@@ -57,6 +57,15 @@ class Client
     }
 
     /**
+     * 请求前处理
+     * @param Request $request
+     */
+    public function beforeRequest(Request &$request)
+    {
+
+    }
+
+    /**
      * @param Request $request
      * @param Response $response
      * @param AsyncCallback|NULL $callback
@@ -65,18 +74,19 @@ class Client
      */
     private function sendRequestAsyncInternal(Request &$request, Response &$response, AsyncCallback $callback = null)
     {
+        $this->beforeRequest($request);
         $parameters = ['exceptions' => false, 'http_errors' => false];
         $queryString = $request->getQueryString();
         $body = $request->getBody();
-        if ($queryString != NULL) {
+        if ($queryString != null) {
             $parameters['query'] = $queryString;
         }
-        if ($body != NULL) {
+        if ($body != null) {
             $parameters['body'] = $body;
         }
 
-        $parameters['timeout'] = $this->requestTimeout;
-        $parameters['connect_timeout'] = $this->connectTimeout;
+        //$parameters['timeout'] = $this->requestTimeout;
+        //$parameters['connect_timeout'] = $this->connectTimeout;
 
         $request = new \GuzzleHttp\Psr7\Request(strtoupper($request->getMethod()), $request->getUri(), $request->getHeaders());
         try {
